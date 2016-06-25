@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router }            from '@angular/router-deprecated';
+import { Router }            from '@angular/router';
 
 import { Hero }                from './hero';
 import { HeroService }         from './hero.service';
@@ -22,10 +22,9 @@ export class HeroesComponent implements OnInit {
 		private heroService: HeroService) { }
 
 	getHeroes() {
-		this.heroService
-				.getHeroes()
-				.then(heroes => this.heroes = heroes)
-				.catch(error => this.error = error); // TODO: Display error message
+		this.heroService.getHeroes()
+			.catch(error => this.error = error)
+			.subscribe(heroes => this.heroes = heroes);
 	}
 
 	addHero() {
@@ -40,13 +39,12 @@ export class HeroesComponent implements OnInit {
 
 	delete(hero: Hero, event: any) {
 		event.stopPropagation();
-		this.heroService
-				.delete(hero)
-				.then(res => {
-					this.heroes = this.heroes.filter(h => h !== hero);
-					if (this.selectedHero === hero) { this.selectedHero = null; }
-				})
-				.catch(error => this.error = error); // TODO: Display error message
+		this.heroService.delete(hero)
+			.catch(error => this.error = error)
+			.subscribe(res => {
+				this.heroes = this.heroes.filter(h => h !== hero);
+				if (this.selectedHero === hero) { this.selectedHero = null; }
+			});
 	}
 
 	ngOnInit() {
@@ -59,6 +57,6 @@ export class HeroesComponent implements OnInit {
 	}
 
 	gotoDetail() {
-		this.router.navigate(['HeroDetail', { id: this.selectedHero.id }]);
+		this.router.navigate(['/hero', this.selectedHero.id]);
 	}
 }
