@@ -4,6 +4,9 @@ import { Headers, Http } from '@angular/http';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/flatMap';
+
+import { Observable } from 'rxjs/Observable';
 
 import { Hero } from './hero';
 
@@ -22,7 +25,6 @@ export class HeroService {
 
 	getHero(id: number) {
 		return this.getHeroes()
-			.flatMap(heroes => heroes)
 			.filter(hero => hero.id == id)
 			.first();
 	}
@@ -45,7 +47,7 @@ export class HeroService {
 	}
 
 	// Add new Hero
-	private post(hero: Hero): Promise<Hero> {
+	private post(hero: Hero) {
 		let headers = new Headers({
 			'Content-Type': 'application/json'});
 
@@ -65,7 +67,8 @@ export class HeroService {
 			.catch(this.handleError);
 	}
 
-	private handleError(error: any, caught: Observable<Response>) {
+	private handleError(error: any, caught) {
 		console.error('An error occurred', error, caught);
+		return caught;
 	}
 }
